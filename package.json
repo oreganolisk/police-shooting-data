@@ -1,0 +1,14 @@
+{
+  "name": "police-shootings-data",
+  "version": "1.0.0",
+  "description": "generates database file for police-shootings from sources",
+  "scripts": {
+    "build": "ts-node build.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}
