@@ -46,7 +46,7 @@ async function write(data: OutData): Promise<void> {
     const incr = Math.ceil(data.content.length / 10);
     for (var i = 0; i < 10; i++) {
         for (var j = i * incr; j < (i + 1) * incr && j < data.content.length; j++) {
-            await fsp.writeFile(`./dist/db/${data.content[j].id}.json`, JSON.stringify(data.db, null, 2));
+            await fsp.writeFile(`./dist/db/${data.content[j].id}.json`, JSON.stringify(data.content[j], null, 2));
         }
         if (i < 9) {
             console.log(`...${(i + 1) * 10}%`);
