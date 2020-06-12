@@ -83,8 +83,10 @@ function merge(rows: CollatedRow[]): Incident[] {
             location: row.wapo?.city,
             date: row.wapo?.date,
             photo: row.mpv?.photo,
-            video: row.youtube?.video_id,
-            description: row.youtube?.description
+            youtubeEmbed: row.youtube?.video_id,
+            iframeEmbed: row.newsapi?.video,
+            description: row.mpv?.description,
+            newsLink: row.newsapi?.news || row.mpv?.news_link
     }));
 }
 
@@ -135,7 +137,7 @@ function group(rows: Incident[]): IncidentGroup[] {
 
 function havingFilter(rows: Incident[]): Incident[] {
     return rows.filter(row =>
-        !!row.photo && !!row.video && !!row.description)
+        !!row.photo && !!(row.youtubeEmbed || row.iframeEmbed) && !!row.description)
 }
 
 function build(data: SourceData): OutData {

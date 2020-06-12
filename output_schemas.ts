@@ -36,5 +36,7 @@ export interface Incident {
     date: string;
     description: string;
     photo: string; // url
-    video: string; // embed code
+    youtubeEmbed: string; // embed code,
+    iframeEmbed: string; // iframe string
+    newsLink: string; // url
 }
