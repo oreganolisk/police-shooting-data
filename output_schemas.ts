@@ -13,15 +13,17 @@ export enum Armed {
     Other = 'Other'
 }
 
+export interface IncidentGroup {
+    race: Race;
+    armed: Armed;
+    n: number; // the total number of records in this category
+    ids: number[]; // the ids of records in this category that have content blobs
+}
+
 // lightweight reference to all incidents, binned by [race] and [armed]
 export interface IncidentLookupTable {
     description: string; // e.g. "2019 shootings, wapo database, sampled"
-    groups: {
-        race: Race;
-        armed: Armed;
-        n: number; // the total number of records in this category
-        ids: number[]; // the ids of records in this category that have content blobs
-    }[];
+    groups: IncidentGroup[];
 }
 
 // all info for a specific incident
