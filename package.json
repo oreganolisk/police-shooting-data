@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "generates database file for police-shootings from sources",
   "scripts": {
+    "prepare": "ts-node build.ts",
     "build": "ts-node build.ts"
   },
   "author": "",
