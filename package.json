@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "generates database file for police-shootings from sources",
   "scripts": {
-    "prepare": "ts-node build.ts",
-    "build": "ts-node build.ts"
+    "prepare": "npm run build",
+    "build": "ts-node --skip-project build.ts && tsc"
   },
   "author": "",
   "license": "ISC",
@@ -17,8 +17,6 @@
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
-  "files": [
-    "output_schemas.ts",
-    "dist/*"
-  ]
+  "types": "dist/output_schemas.d.ts",
+  "main": "dist/output_schemas.js"
 }
