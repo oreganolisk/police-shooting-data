@@ -90,6 +90,32 @@ function merge(rows: CollatedRow[]): Incident[] {
     }));
 }
 
+function youtubeIdFromUrl(url: string): string {
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return (match && match[7].length==11)? match[7] : null;
+}
+
+function repair(rows: Incident[]): Incident[] {
+    var ytedits = 0;
+    rows = rows.map(row => {
+        if (!!row.iframeEmbed) {
+            const ytembed = youtubeIdFromUrl(row.iframeEmbed);
+            if (ytembed) {
+                row.youtubeEmbed = ytembed;
+                row.iframeEmbed = undefined;
+                ytedits++;
+            }
+        }
+
+        return row;
+    });
+
+    console.log(`Repaired ${ytedits} iframe embed strings to youtube embed ids`);
+
+    return rows;
+}
+
 function whereFilter(rows: Incident[]): Incident[] {
     return rows.filter(row =>
         new Date(row.date).getFullYear() === 2019);
@@ -144,7 +170,8 @@ function build(data: SourceData): OutData {
     const collated = collate(data);
     const merged = merge(collated);
     console.log(`Collated and merged ${merged.length} records`);
-    const filtered = whereFilter(merged);
+    const repaired = repair(merged);
+    const filtered = whereFilter(repaired);
     console.log(`Filtered to ${filtered.length} records`);
     const groups = group(filtered);
     console.log(`Merged to ${groups.length} groups by Race, Armed`);
