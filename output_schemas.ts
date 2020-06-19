@@ -18,6 +18,7 @@ export interface IncidentGroup {
     armed: Armed;
     n: number; // the total number of records in this category
     ids: number[]; // the ids of records in this category that have content blobs
+    idsMissingContent: number[];
 }
 
 // lightweight reference to all incidents, binned by [race] and [armed]

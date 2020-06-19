@@ -161,9 +161,8 @@ function group(rows: Incident[]): IncidentGroup[] {
     return groups.sort((a, b) => a.incidents.length - b.incidents.length);
 }
 
-function havingFilter(rows: Incident[]): Incident[] {
-    return rows.filter(row =>
-        !!row.photo && !!(row.youtubeEmbed || row.iframeEmbed) && !!row.description)
+function hasContent(row: Incident): boolean {
+    return !!row.photo && !!(row.youtubeEmbed || row.iframeEmbed) && !!row.description;
 }
 
 function build(data: SourceData): OutData {
@@ -182,18 +181,18 @@ function build(data: SourceData): OutData {
             armed: grp.armed,
             race: grp.race,
             n: grp.incidents.length,
-            ids: havingFilter(grp.incidents).map(incident => incident.id)
+            ids: grp.incidents.filter(hasContent).map(row => row.id),
+            idsMissingContent: grp.incidents.filter(row => !hasContent(row)).map(row => row.id)
         }))
     };
-    const content: Incident[] = havingFilter(filtered);
 
-    console.log('Content blobs by group...');
+    console.log('Sufficient content by group...');
     for (var grp of db.groups) {
         console.log(`...${grp.ids.length}/${grp.n} for ${grp.armed} | ${grp.race}`)
     }
-    console.log(`Overall, database has content blobs for ${content.length}/${filtered.length} records.`);
+    console.log(`Overall, database has sufficient content for ${filtered.filter(hasContent).length}/${filtered.length} records.`);
 
-    return { db, content };
+    return { db, content: filtered };
 }
 
 async function main() {
