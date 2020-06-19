@@ -1,7 +1,7 @@
 import { createReadStream, exists, existsSync } from 'fs';
 import { promises as fsp } from 'fs';
 import * as neatCsv from 'neat-csv';
-import { MpvRow, WapoRow, NewsApiRow, YoutubeRow } from './asset_schemas';
+import { MpvRow, WapoRow, NewsApiRow, YoutubeRow, ManualRow } from './asset_schemas';
 import { IncidentLookupTable, Incident, Race, Armed } from './output_schemas';
 import * as rimraf from 'rimraf';
 
@@ -10,6 +10,7 @@ interface SourceData {
     wapo: WapoRow[];
     newsapi: NewsApiRow[];
     youtube: YoutubeRow[];
+    manual: ManualRow[];
 }
 
 async function load(): Promise<SourceData> {
@@ -22,9 +23,11 @@ async function load(): Promise<SourceData> {
     console.log(`...newsapi.csv ${newsapi.length} rows`)
     const youtube = await neatCsv(createReadStream('./assets/youtube.csv')) as YoutubeRow[];
     console.log(`...youtube.csv ${youtube.length} rows`)
+    const manual = await neatCsv(createReadStream('./assets/manual_data.csv')) as ManualRow[];
+    console.log(`...manual_data.csv ${manual.length} rows`)
     console.log('Done.');
     
-    return { mpv, wapo, newsapi, youtube } as SourceData;
+    return { mpv, wapo, newsapi, youtube, manual } as SourceData;
 }
 
 interface OutData {
@@ -60,6 +63,7 @@ interface CollatedRow {
     wapo: WapoRow;
     newsapi: NewsApiRow;
     youtube: YoutubeRow;
+    manual: ManualRow;
 }
 
 function collate(data: SourceData): CollatedRow[] {
@@ -68,7 +72,8 @@ function collate(data: SourceData): CollatedRow[] {
         wapo: row,
         mpv: data.mpv.find(other => row.id === other.wapo_id),
         newsapi: data.newsapi.find(other => row.id === other.wapo_id),
-        youtube: data.youtube.find(other => row.id === other.wapo_id)
+        youtube: data.youtube.find(other => row.id === other.wapo_id),
+        manual: data.manual.find(other => row.id === other.id)
     }));
 }
 
@@ -82,11 +87,11 @@ function merge(rows: CollatedRow[]): Incident[] {
             armed: row.wapo?.armed,
             location: row.wapo?.city,
             date: row.wapo?.date,
-            photo: row.mpv?.photo,
-            youtubeEmbed: row.youtube?.video_id,
-            iframeEmbed: row.newsapi?.video,
-            description: row.mpv?.description,
-            newsLink: row.newsapi?.news || row.mpv?.news_link
+            photo: row.manual?.photo || row.mpv?.photo,
+            youtubeEmbed: row.manual?.youtubeEmbed || row.youtube?.video_id,
+            iframeEmbed: row.manual?.iframeEmbed || row.newsapi?.video,
+            description: row.manual?.description || row.mpv?.description,
+            newsLink: row.manual?.newsLink || row.newsapi?.news || row.mpv?.news_link
     }));
 }
 

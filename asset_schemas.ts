@@ -66,3 +66,12 @@ export interface YoutubeRow {
     race: string;
     mpv_description: string;
 }
+
+export interface ManualRow {
+    id: string;
+    description: string;
+    photo: string;
+    youtubeEmbed: string;
+    iframeEmbed: string;
+    newsLink: string;
+}
