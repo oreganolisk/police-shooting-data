@@ -45,7 +45,7 @@ export interface WapoRow {
     body_camera: string;
 }
 
-export interface UnarmedNewsApiRow {
+export interface NewsApiRow {
     name: string;
     wapo_id: string;
     city: string;
@@ -55,7 +55,7 @@ export interface UnarmedNewsApiRow {
     news: string;
 }
 
-export interface UnarmedYoutubeRow {
+export interface YoutubeRow {
     video_id: string;
     upload_date: string;
     title: string;
