@@ -79,6 +79,11 @@ function collate(data: SourceData): CollatedRow[] {
 
 function merge(rows: CollatedRow[]): Incident[] {
     return rows.map(row => ({
+            ...row.newsapi, // note: all properties are added in addition to the canonical properties
+            ...row.youtube,
+            ...row.mpv,
+            ...row.wapo,
+            ...row.manual,
             id: parseInt(row.wapo?.id),
             name: row.wapo?.name,
             age: parseInt(row.wapo?.age),
